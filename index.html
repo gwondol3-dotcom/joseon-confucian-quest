@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>까비와 조선 과거 시험 대모험 | 횡계초 5머루</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#24304a;--paper:#fffaf0;--paper2:#f4e8cf;--line:#e0c999;--navy:#2c4a7a;--navy2:#1c3157;--red:#c9533a;--red2:#963a26;--gold:#f0b429;--ok:#3b8f5a;--muted:#7a6a4f}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:'Gowun Dodum','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ink);font-size:21px;line-height:1.6;
+  background:linear-gradient(180deg,#f8d9c4 0,#f3e3c3 35%,#e8d2a6 100%) fixed}
+h1,h2,h3,button,.jua{font-family:'Jua','Malgun Gothic',sans-serif;font-weight:400}
+button{touch-action:manipulation}
+#app{max-width:1000px;margin:0 auto;padding:14px 14px 34px;position:relative;z-index:1}
+#petals{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+#petals i{position:absolute;top:-30px;width:14px;height:10px;border-radius:70% 0 70% 0;background:#f6b6c4;opacity:.75;animation:drift linear infinite}
+@keyframes drift{to{transform:translate(-80px,110vh) rotate(540deg)}}
+
+#hud{background:rgba(44,74,122,.92);border-radius:18px;padding:10px 14px;margin-bottom:14px;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+#hud.hidden{display:none}
+.road{display:flex;align-items:center;margin-bottom:10px}
+.node{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:19px;font-family:'Jua',sans-serif;background:#47669a;border:3px solid #7f9cc9;color:#e3ecfa}
+.node.done{background:var(--ok);border-color:#9fe0b8;color:#fff}
+.node.now{background:var(--gold);border-color:#fff1c2;color:#4a3300;transform:scale(1.15);box-shadow:0 0 14px #ffd95a}
+.seg{flex:1;height:5px;background:#47669a;border-radius:3px;margin:0 3px}
+.seg.done{background:#9fe0b8}
+.bag{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.slot{width:60px;height:60px;border-radius:14px;border:2px dashed rgba(255,255,255,.45);display:grid;place-items:center;background:rgba(0,0,0,.18);font-family:'Jua',sans-serif}
+.slot img{width:52px;height:52px;object-fit:contain}
+.slot.has{border:2px solid var(--gold);background:rgba(240,180,41,.25)}
+.coin{font-family:'Jua',sans-serif;font-size:22px;background:rgba(255,255,255,.16);border-radius:999px;padding:4px 14px}
+.who{font-size:17px;opacity:.9}
+.reset{margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,.55);color:#fff;border-radius:12px;padding:8px 14px;font-size:17px;min-height:44px;cursor:pointer}
+
+.card{background:var(--paper);border:4px solid var(--line);border-radius:24px;padding:24px 26px;box-shadow:0 12px 30px rgba(90,60,20,.25);animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.tag{display:inline-block;background:var(--navy);color:#fff;border-radius:999px;padding:3px 16px;font-family:'Jua',sans-serif;font-size:18px}
+.tag.red{background:var(--red)}
+.school{display:inline-block;background:var(--red);color:#fff;border-radius:14px;padding:6px 20px;font-family:'Jua',sans-serif;font-size:26px;margin-bottom:6px;box-shadow:0 4px 0 var(--red2)}
+h1{font-size:46px;margin:.15em 0;line-height:1.25;color:var(--navy2)}
+h2{font-size:34px;margin:.25em 0 .35em;color:var(--navy2)}
+.center{text-align:center}
+.scene{display:block;width:100%;max-height:300px;object-fit:cover;border-radius:18px;margin:8px 0 14px;background:var(--paper2)}
+.key{background:linear-gradient(transparent 55%,#ffd98a 55%);font-weight:700}
+.guide{display:flex;gap:12px;align-items:center;margin:12px 0}
+.guide img{width:88px;height:88px;object-fit:contain;flex:0 0 auto;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.guide div{background:#fff;border:2px solid var(--line);border-radius:18px;padding:10px 16px;flex:1}
+.chips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.chip{background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 14px;text-align:center;min-width:130px;flex:0 1 auto}
+.chip img{display:block;width:92px;height:92px;object-fit:contain;margin:0 auto}
+.chip small{display:block;color:var(--muted);font-size:.8em;line-height:1.4}
+.chip b.big{font-size:1.5em;color:var(--red)}
+.quote{background:#fbf3df;border-left:6px solid var(--red);border-radius:10px;padding:10px 16px;margin:10px 0}
+.quote small{display:block;color:var(--muted)}
+
+.btn{display:inline-block;border:0;border-radius:18px;padding:14px 32px;min-height:62px;font-size:26px;cursor:pointer;color:#fff;background:var(--navy);box-shadow:0 5px 0 var(--navy2)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--navy2)}
+.btn.gold{background:var(--gold);color:#4a3300;box-shadow:0 5px 0 #a87a0c}
+.btn.red{background:var(--red);box-shadow:0 5px 0 var(--red2)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--line);border:2px solid var(--line)}
+.btn.sm{font-size:19px;padding:8px 18px;min-height:48px}
+.btn:disabled{opacity:.45}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+.qno{color:var(--muted);font-family:'Jua',sans-serif}
+.qtext{font-size:29px;font-family:'Jua',sans-serif;margin:6px 0 16px;line-height:1.4}
+.opts{display:grid;gap:12px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{background:#fff;border:3px solid var(--line);border-radius:18px;padding:14px 18px;min-height:64px;font-size:23px;text-align:left;cursor:pointer;font-family:inherit;color:inherit}
+.opt.sel{border-color:var(--navy);background:#e3ebf8}
+.opt.ok{border-color:var(--ok);background:#dff3e3}
+.opt.no{border-color:var(--red);background:#fbe1dd;animation:shake .35s}
+.ox{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ox .opt{font-size:80px;text-align:center;font-family:'Jua',sans-serif;padding:12px}
+.ox .o{color:#2a6fb0}.ox .x{color:var(--red)}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+input.ans,textarea.ans,select.ans{font:inherit;font-size:28px;padding:12px 16px;border:3px solid var(--line);border-radius:16px;background:#fff;color:inherit}
+input.ans{width:min(100%,380px);text-align:center}
+textarea.ans{width:100%;min-height:220px;font-size:24px;line-height:1.6}
+input.ans:focus,textarea.ans:focus,select.ans:focus{outline:none;border-color:var(--navy)}
+.idrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
+.idrow input.ans{width:200px}
+.idrow select.ans{width:150px;text-align:center}
+.seq{min-height:70px;border:3px dashed var(--line);border-radius:16px;padding:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#fff;margin-bottom:12px}
+.seq:empty::before{content:'아래 카드를 순서대로 눌러 보세요';color:#a08f70;padding-left:8px}
+.pills{display:flex;gap:10px;flex-wrap:wrap}
+.pill{background:var(--navy);color:#fff;border-radius:14px;padding:10px 16px;min-height:54px;font-size:21px;border:0;font-family:inherit;cursor:pointer}
+.pill.pool{background:#fff;color:var(--ink);border:3px solid var(--line)}
+.pill.used{visibility:hidden}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px}
+.match .opt{display:flex;align-items:center;gap:10px}
+.match img{width:70px;height:70px;object-fit:contain;flex:0 0 auto}
+.fb{margin-top:16px;border-radius:14px;padding:12px 16px;font-size:22px;display:none}
+.fb.bad{display:block;background:#fbe1dd;border:2px solid var(--red)}
+.fb.good{display:block;background:#dff3e3;border:2px solid var(--ok)}
+/* 분류 */
+.sortcard{background:#fff;border:3px solid var(--line);border-radius:18px;padding:18px;text-align:center;font-size:27px;font-family:'Jua',sans-serif;margin-bottom:14px}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bins .btn{width:100%;min-height:92px}
+/* 그림 순서 */
+.frames{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frame{position:relative;background:#fff;border:3px solid var(--line);border-radius:18px;padding:8px;cursor:pointer;font-family:inherit;color:inherit;font-size:19px;text-align:center}
+.frame img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px;display:block;margin-bottom:4px;background:var(--paper2)}
+.frame .num{position:absolute;top:-12px;left:-12px;width:52px;height:52px;border-radius:50%;background:var(--red);color:#fff;font-family:'Jua',sans-serif;font-size:30px;display:none;place-items:center;border:3px solid #fff}
+.frame.on{border-color:var(--red)}
+.frame.on .num{display:grid}
+/* 신분 게임 */
+.scale{display:grid;gap:10px}
+.scale .opt{display:flex;align-items:center;gap:14px}
+.scale .opt b{flex:0 0 auto;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:'Jua',sans-serif;font-size:24px}
+.statusbox{text-align:center;background:#fff;border:4px solid var(--gold);border-radius:20px;padding:14px}
+.statusbox img{width:170px;height:170px;object-fit:contain;animation:spin .8s ease}
+/* 빙고 */
+.bingo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px;margin:12px auto}
+.bingo button{aspect-ratio:1;border-radius:18px;border:3px solid var(--line);background:#fff;font-family:'Jua',sans-serif;font-size:42px;color:var(--ink);cursor:pointer}
+.bingo button.cur{border-color:var(--gold);background:#fff4cf}
+.bingo button.t{background:#d6e4f7;border-color:var(--navy);color:var(--navy2)}
+.bingo button.f{background:#e7e4df;border-color:#c9c4bb;color:#9a938a}
+.bingo button.line{background:var(--gold);border-color:#a87a0c;color:#4a3300}
+
+.item{width:190px;height:190px;object-fit:contain;animation:spin .8s ease}
+@keyframes spin{from{transform:scale(0) rotate(-160deg)}to{transform:none}}
+.locks{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.locks img{width:62px;height:62px;object-fit:contain;animation:spin .6s both}
+.cert{border:8px double var(--red);border-radius:18px;padding:20px;background:#fff3ef;text-align:center}
+.letterbox{white-space:pre-wrap;text-align:left;background:#fbf3df;border-radius:12px;padding:12px 16px;border:2px solid var(--line)}
+.note{font-size:.85em;color:var(--muted)}
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+#confetti i{position:absolute;top:-20px;width:12px;height:18px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+footer{color:#7a6a4f;font-size:15px;text-align:center;margin-top:16px}
+footer button{background:none;border:0;color:#7a6a4f;text-decoration:underline;font-size:15px;min-height:44px;cursor:pointer;font-family:inherit}
+.sendstate{font-size:15px;color:var(--muted);text-align:center;margin-top:8px}
+@media(max-width:640px){
+  body{font-size:19px}h1{font-size:34px}h2{font-size:27px}.qtext{font-size:24px}
+  .card{padding:18px 14px}.opts.two,.match{grid-template-columns:1fr}.opt{font-size:21px}
+  .node{width:32px;height:32px;font-size:15px}.slot{width:46px;height:46px}.slot img{width:40px;height:40px}
+  .school{font-size:21px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="petals"></div>
+<div id="app">
+  <div id="hud" class="hidden"></div>
+  <main id="screen"></main>
+  <footer>5학년 2학기 사회 2단원 · [4~5차시] 유교 질서에 따른 조선 사회의 모습을 알아볼까요 (교과서 82~86쪽)<br>
+    <button id="teacherBtn">선생님 설정</button></footer>
+</div>
+<div id="confetti"></div>
+
+<script src="config.js"></script>
+<script>
+const CLASS_NAME = '횡계초 5머루';
+const img = n => `assets/${n}.webp`;
+const kkabi = t => `<div class="guide"><img src="${img('kkabi')}" alt="까치 선비 까비"><div>${t}</div></div>`;
+
+/* ===================== 미션 데이터 ===================== */
+const MISSIONS = [
+{
+  title:'그림으로 배우는 유교', pic:'m1', item:{img:'book1', name:'삼강행실도'},
+  story:[
+    `${kkabi('안녕! 나는 조선 마을의 까치 선비 <b>까비</b>야. 과거 시험장 문이 굳게 잠겨 있어! 유교의 보물 <b>6개</b>를 모아야 문이 열린대. 나랑 같이 모으러 가자!')}
+     <p>조선은 <span class="key">유교</span>의 가르침을 바탕으로 세운 나라예요. 나라에서는 백성들이 유교 정신을 배우고 실천하기를 바랐어요.</p>
+     <p>그런데 백성들이 잘 따랐을까요? <b>아니요!</b> 유교가 무엇인지 <span class="key">잘 알지 못했기 때문</span>이에요.</p>
+     <div class="quote">"백성 가운데 책을 읽지 못해 무엇이 효도이고 무엇이 의리인지 몰라 죄를 짓는 자가 많다. 효자, 충신, 열녀의 이야기를 뽑아 <b>그림으로 그리고 설명을 붙여</b> 백성에게 나눠 주어라."<small>- 세종의 말씀 (『세종실록』의 내용을 쉽게 고쳐 씀)</small></div>`,
+    `<p>그래서 <b>1434년 세종</b> 때 만든 책이 바로 <span class="key" style="font-size:1.2em">『삼강행실도』</span>예요!</p>
+     <div class="chips">
+       <div class="chip"><b class="big">충</b><br>충신<small>나라와 임금에게<br>충성한 신하</small></div>
+       <div class="chip"><b class="big">효</b><br>효자<small>부모님께<br>효도한 자식</small></div>
+       <div class="chip"><b class="big">열</b><br>열녀<small>남편에 대한 도리를<br>지킨 부인</small></div>
+     </div>
+     <p>왜 <b>그림</b>을 넣었을까요? <span class="key">글을 모르는 백성도 쉽게 알 수 있도록</span> 글과 함께 그림을 그려 넣었어요.</p>
+     <p>처음에는 한자로 되어 있어 어려웠지만, <span class="key">훈민정음(한글)</span>으로 풀어 쓴 책이 나오면서 유교의 가르침이 백성에게 널리 퍼졌어요.</p>`,
+    `<p><b>『삼강행실도』에 실린 최루백 이야기</b></p>
+     <p>최루백이 열다섯 살 때, 아버지가 산에 갔다가 <b>호랑이</b>에게 해를 당했어요. 최루백은 도끼를 들고 산으로 가서 <b>호랑이를 물리쳤어요</b>.</p>
+     <p>그리고 아버지를 정성껏 <b>장사 지내고</b>, 무덤 옆에 작은 움막을 지어 <b>3년 동안 무덤을 지켰어요</b>.</p>
+     ${kkabi('부모님을 끝까지 공경하는 마음, 바로 유교에서 중요하게 여긴 <b>효</b>야!')}`
+  ],
+  qs:[
+    {type:'choice', q:'나라에서 『삼강행실도』를 펴낸 까닭은 무엇일까요?', opts:['백성이 유교의 가르침을 배우고 실천하도록','왕의 업적을 자랑하려고','다른 나라에 팔려고','농사짓는 방법을 알려 주려고'], a:0, hint:'백성들이 유교를 잘 몰라서 따르지 않았어요.'},
+    {type:'choice', q:'『삼강행실도』에 그림을 함께 넣은 까닭은?', opts:['글을 모르는 백성도 쉽게 알 수 있도록','책을 두껍게 만들려고','화가들에게 일을 주려고','어린아이만 보게 하려고'], a:0, hint:'그 시대에는 글을 읽지 못하는 백성이 많았어요.'},
+    {type:'match', q:'삼강의 세 가지 사람과 뜻을 짝지어 보세요!', pairs:[['','충신','나라와 임금에게 충성한 신하'],['','효자','부모님께 효도한 자식'],['','열녀','남편에 대한 도리를 지킨 부인']], hint:'충=충성, 효=효도를 떠올려 보세요.'},
+    {type:'frames', q:'최루백 이야기의 순서대로 그림을 눌러 보세요!', items:[['choi1','아버지가 산에서 호랑이를 만남'],['choi2','최루백이 도끼를 들고 호랑이와 맞섬'],['choi3','아버지를 정성껏 장사 지냄'],['choi4','무덤 옆 움막에서 3년 동안 지킴']], hint:'호랑이를 만남 → 물리침 → 장사 → 무덤 지키기 순서예요.'},
+    {type:'choice', q:'최루백 이야기는 유교의 어떤 가르침을 알리려고 실렸을까요?', opts:['효','충','신','예'], a:0, hint:'아버지를 위한 이야기예요.'},
+    {type:'ox', q:'훈민정음(한글)으로 풀어 쓴 『삼강행실도』는 백성에게 유교를 알리는 데 도움이 되었다.', a:'O', hint:'한자보다 한글이 훨씬 배우기 쉬웠어요.'},
+    {type:'input', q:'백성이 유교의 가르침을 배우도록 그림과 글로 만든 책의 이름은?', a:['삼강행실도'], ph:'초성: ㅅㄱㅎㅅㄷ', hint:'초성은 ㅅㄱㅎㅅㄷ, 다섯 글자예요.'}
+  ]
+},
+{
+  title:'법이 된 유교 정신', pic:'m2', item:{img:'law', name:'경국대전'},
+  story:[
+    `<p>조선은 유교의 가르침을 바탕으로 <b>법</b>을 만들었어요.</p>
+     <p class="center" style="font-size:1.2em"><span class="key">『경국대전』</span></p>
+     <div class="chips">
+       <div class="chip"><b>세조</b><small>1455년 즉위 후<br>만들기 시작</small></div>
+       <div class="chip" style="min-width:0;border:0;background:none;align-self:center">→</div>
+       <div class="chip"><b>성종</b><small>1485년<br>완성</small></div>
+     </div>
+     <p>『경국대전』은 조선의 <b>기본 법전</b>으로, 조선 말까지 나라를 다스리는 기준이 되었어요. 이 법으로 <span class="key">유교 중심의 나라 질서</span>가 자리 잡았어요.</p>`,
+    `<p><b>『경국대전』에는 어떤 내용이 실려 있을까요?</b> (쉽게 고쳐 쓴 내용)</p>
+     <div class="quote">부모님의 상 중에 상복을 벗고 풍악을 울리면 벌을 준다.</div>
+     <div class="quote">천민이 말을 타고 가다 높은 관리를 만났는데 내려서 피하지 않으면 벌을 준다.</div>
+     <div class="quote">왕의 명령을 받고도 어기거나 기한을 넘기면 큰 벌을 준다.</div>
+     <div class="quote">나라의 세금이나 재산을 가로챈 관리는 도둑과 같이 벌한다.</div>
+     <p>유교의 가르침 <b>인 · 의 · 예 · 지 · 신 · 효 · 충</b>이 법에 들어 있어요. 이 밖에도 <span class="key">결혼 제도, 재산, 군대 면제</span> 같은 내용이 담겨 백성의 생활에 큰 영향을 주었어요.</p>`
+  ],
+  qs:[
+    {type:'choice', q:'『경국대전』을 완성한 왕은 누구일까요?', opts:['성종','세종','태조','세조'], a:0, hint:'세조 때 만들기 시작해서, 그 뒤의 왕 때 완성했어요.'},
+    {type:'sort', q:'법 속에 담긴 유교의 가르침은? 알맞은 글자를 누르세요.', bins:['효','예','충','신'], items:[['부모님 상 중에 풍악을 울리면 벌을 준다',0],['천민이 높은 관리를 만나면 말에서 내려 피해야 한다',1],['왕의 명령을 어기면 큰 벌을 준다',2],['나라 재산을 가로챈 관리는 도둑처럼 벌한다',3]], hint:'효=부모님, 예=예절, 충=나라와 왕, 신=믿음과 정직이에요.'},
+    {type:'ox', q:'『경국대전』은 조선 말까지 나라를 다스리는 기준이 되었다.', a:'O', hint:'조선의 기본 법전이었어요.'},
+    {type:'multi', q:'『경국대전』에 담긴 내용을 모두 고르세요. (3개)', opts:['결혼 제도','재산','군대 면제','휴대 전화 사용법','축구 경기 규칙'], a:[0,1,2], hint:'조선 시대에 없던 것은 빼요!'},
+    {type:'choice', q:'『경국대전』을 만들어서 이룬 일로 가장 알맞은 것은?', opts:['유교 중심의 나라 질서를 세웠다','불교를 나라의 종교로 삼았다','신분 제도를 없앴다','외국과의 무역을 금지했다'], a:0, hint:'유교의 가르침을 법으로 만들었어요.'}
+  ]
+},
+{
+  title:'관혼상제의 비밀', pic:'m3', item:{img:'goose', name:'목기러기'},
+  story:[
+    `<p>유교의 가르침이 널리 퍼지면서 나라의 행사뿐 아니라 <b>집안 행사</b>도 유교의 예절을 따르게 되었어요.</p>
+     <p>나라에서는 이 네 가지 행사를 중요하게 여겨 백성들도 따르게 했어요.</p>
+     <div class="chips">
+       <div class="chip"><b class="big">관(冠)</b><br>관례<small>15세가 넘으면 치르는<br>어른이 되는 성인식</small></div>
+       <div class="chip"><b class="big">혼(婚)</b><br>혼례<small>평생 함께할 것을<br>약속하는 결혼식</small></div>
+       <div class="chip"><b class="big">상(喪)</b><br>상례<small>상복을 입고 돌아가신<br>분을 기리는 장례</small></div>
+       <div class="chip"><b class="big">제(祭)</b><br>제례<small>조상의 은혜에 보답하며<br>정성껏 지내는 제사</small></div>
+     </div>`,
+    `<p><b>관례</b> - 남자는 <span class="key">상투를 틀고 갓을 씌워 주는</span> 예식을 했어요. 여자는 <span class="key">머리를 올려 쪽을 찌고 비녀를 꽂는</span> 예식(계례)을 했는데, 주로 혼례와 함께 했어요.</p>
+     <p><b>혼례</b> - 혼례상에는 <span class="key">나무로 만든 기러기(목기러기)</span>를 올렸어요. 기러기는 한번 짝을 지으면 평생 함께한다고 여겨, 부부의 약속을 뜻했어요.</p>
+     ${kkabi('요즘은 어때? 관혼상제는 <b>간단해지거나 생략</b>되기도 하고, <b>다른 문화를 받아들여</b> 새롭게 변하고 있어. 예식장 결혼식, 장례식장, 성년의 날처럼 말이야!')}`
+  ],
+  qs:[
+    {type:'match', q:'관혼상제와 알맞은 설명을 짝지어 보세요!', pairs:[['','관례','어른이 되었음을 알리는 성인식'],['','혼례','평생 함께할 것을 약속하는 예식'],['','상례','상복을 입고 돌아가신 분을 기리는 예식'],['','제례','조상의 은혜에 보답하며 지내는 제사']], hint:'관=갓(어른), 혼=결혼, 상=장례, 제=제사예요.'},
+    {type:'order', q:'사람의 일생에 맞게 행사 순서를 정해 보세요!', items:['관례','혼례','상례','제례'], hint:'어른이 되고 → 결혼하고 → 돌아가시면 장례를 치르고 → 그 뒤 제사를 지내요.'},
+    {type:'sort', q:'남자의 관례일까요, 여자의 관례(계례)일까요?', bins:['남자의 관례','여자의 관례(계례)'], items:[['상투 틀기',0],['갓 쓰기',0],['쪽 찌기',1],['비녀 꽂기',1]], hint:'갓은 남자, 비녀는 여자가 했어요.'},
+    {type:'ox', q:'관례는 아이가 15세가 넘으면 치르는 성인식이다.', a:'O', hint:'관례는 어른이 되었음을 알리는 예식이에요.'},
+    {type:'choice', q:'오늘날 관혼상제의 모습으로 가장 알맞은 것은?', opts:['간단해지거나 다른 문화를 받아들여 새롭게 변하고 있다','조선 시대와 완전히 똑같다','모두 사라져서 아무도 하지 않는다','법으로 모두 금지되었다'], a:0, hint:'예식장 결혼식, 장례식장을 떠올려 보세요.'},
+    {type:'input', q:'혼례상에 올린, 평생 짝을 지키는 새를 나무로 만든 것은? (목○○○)', a:['기러기','목기러기','나무기러기'], ph:'초성: ㄱㄹㄱ', hint:'초성은 ㄱㄹㄱ, 세 글자 새 이름이에요.'}
+  ]
+},
+{
+  title:'신분에 맞게 사는 조선', pic:'m4', item:{img:'hopae', name:'호패'},
+  story:[
+    `<p>조선은 <b>신분</b>을 확실하게 나누고, 유교 질서에 따라 <span class="key">각자 신분에 맞게</span> 생활하게 했어요.</p>
+     <p>법으로는 <span class="key">양인</span>과 <span class="key">천인</span> 두 가지로 나누었지만, 실제 사회에서는 <b>네 개의 신분</b>으로 나뉘었어요.</p>
+     <div class="chips">
+       <div class="chip"><img src="${img('yangban')}" alt="">양반<small>양인</small></div>
+       <div class="chip"><img src="${img('jungin')}" alt="">중인<small>양인</small></div>
+       <div class="chip"><img src="${img('sangmin')}" alt="">상민<small>양인</small></div>
+       <div class="chip"><img src="${img('cheonmin')}" alt="">천민<small>천인</small></div>
+     </div>`,
+    `<p><b>양반</b> - 유교 책을 공부하거나 관리가 되어 나랏일을 했어요. <span class="key">군역을 면제</span>받았어요.<br><span class="note">* 군역: 군대에 가거나 큰 공사 등에 참여해야 하는 의무</span></p>
+     <p><b>중인</b> - 높은 관리를 돕거나 <span class="key">의학, 법률, 통역</span> 같은 전문적인 일을 했어요.</p>
+     <p><b>상민</b> - 대부분 <span class="key">농사를 짓거나 물건을 팔았어요</span>. 세금을 내고 군대에 가는 사람도 대부분 상민이었어요. 법으로는 과거 시험을 볼 수 있었지만, 일하느라 공부할 형편이 안 됐어요.</p>
+     <p><b>천민</b> - 대부분 <span class="key">노비</span>였어요. 노비는 재산처럼 여겨져 사고팔리거나 물려졌지만, 결혼도 하고 재산을 모을 수도 있었어요. 춤추고 노래하는 사람, 가죽을 다루는 사람도 천민으로 여겨졌어요.</p>
+     ${kkabi('이번 보물은 <b>호패</b>! 조선의 16세 이상 남자가 차고 다닌 신분증이야.')}`
+  ],
+  qs:[
+    {type:'ox', q:'양반은 군대에 갔다.', a:'X', hint:'양반은 군역을 면제받았어요.'},
+    {type:'ox', q:'조선 시대의 의사, 법률 전문가는 주로 양반이 했다.', a:'X', hint:'의학, 법률, 통역 같은 전문적인 일은 다른 신분이 맡았어요.'},
+    {type:'ox', q:'상민도 법으로는 과거 시험을 볼 수 있었다.', a:'O', hint:'법으로는 가능했지만 공부할 형편이 어려웠어요.'},
+    {type:'ox', q:'노비도 결혼을 하고 재산을 모을 수 있었다.', a:'O', hint:'재산처럼 여겨졌지만, 결혼하고 재산을 모으기도 했어요.'},
+    {type:'match', q:'신분과 주로 하던 일을 짝지어 보세요!', pairs:[['yangban','양반','유교 공부, 관리가 되어 나랏일'],['jungin','중인','의학, 법률, 통역 같은 전문적인 일'],['sangmin','상민','농사짓기, 물건 팔기, 세금 내기'],['cheonmin','천민','허드렛일, 물건 만들기']], hint:'앞에서 배운 신분별 설명을 떠올려 보세요.'},
+    {type:'sort', q:'이 사람은 어떤 신분일까요?', bins:['양반','중인','상민','천민'], items:[['나랏일을 하는 관리',0],['외국 말을 옮기는 통역관',1],['병을 고치는 의원',1],['논밭을 가는 농부',2],['장터의 상인',2],['주인집의 노비',3],['춤추고 노래하는 광대',3]], hint:'전문적인 일은 중인, 농사와 장사는 상민이에요.'},
+    {type:'multi', q:'법으로 "양인"에 속하는 신분을 모두 고르세요. (3개)', opts:['양반','중인','상민','천민'], a:[0,1,2], hint:'천민만 "천인"이었어요.'}
+  ]
+},
+{
+  title:'조선 여성의 삶', pic:'m5', item:{img:'norigae', name:'노리개'},
+  story:[
+    `<p>고려 시대 여성은 <b>사회 활동</b>도 하고, <b>부모님 재산을 물려받고</b>, <b>제사</b>도 지내고, <b>재혼</b>도 할 수 있었어요.</p>
+     <p>조선에서는 어땠을까요?</p>
+     <div class="chips">
+       <div class="chip"><b>조선 전기</b><small>고려의 영향으로<br>아들과 딸의 차별이 적음<br>(재산 상속, 제사)</small></div>
+       <div class="chip"><b>조선 후기</b><small>여성의 지위가 낮아지고<br>삼종지도를 따르는 삶<br>(배움의 기회가 줄어듦)</small></div>
+     </div>`,
+    `<p><span class="key" style="font-size:1.2em">삼종지도</span> - 조선 시대 여자가 따라야 했던 세 가지 도리</p>
+     <div class="chips">
+       <div class="chip">어려서는<br><b>아버지</b>의 뜻을</div>
+       <div class="chip">결혼해서는<br><b>남편</b>의 뜻을</div>
+       <div class="chip">늙어서는<br><b>아들</b>의 뜻을</div>
+     </div>
+     <p><b>왜 이렇게 변했을까요?</b> 큰 <span class="key">전쟁</span>을 겪으며 사회가 혼란해지자, 질서를 세우려고 신분의 차이를 강조하고 남자와 여자의 지위를 구별했기 때문이에요.</p>
+     ${kkabi('지금은 남자와 여자 모두 똑같이 소중하고 평등해! 옛날 모습을 알면 오늘이 더 잘 보여.')}`
+  ],
+  qs:[
+    {type:'sort', q:'조선 전기의 모습일까요, 후기의 모습일까요?', bins:['조선 전기','조선 후기'], items:[['딸도 아들과 똑같이 재산을 물려받음',0],['딸도 부모님 제사를 지냄',0],['여자가 삼종지도를 따름',1],['여자가 배울 기회가 줄어듦',1]], hint:'전기는 고려의 영향이 남아 있었어요.'},
+    {type:'order', q:'삼종지도를 순서대로 놓아 보세요!', items:['어려서는 아버지의 뜻을 따른다','결혼해서는 남편의 뜻을 따른다','늙어서는 아들의 뜻을 따른다'], hint:'어릴 때 → 결혼한 뒤 → 나이 들어서 순서예요.'},
+    {type:'ox', q:'조선 전기에 비해 후기로 갈수록 여성의 지위가 낮아졌다.', a:'O', hint:'후기에는 삼종지도를 따르는 삶을 살았어요.'},
+    {type:'choice', q:'조선 후기에 여성의 지위가 낮아진 까닭은?', opts:['전쟁 뒤 혼란한 사회 질서를 세우려고 남녀 구별을 강조해서','여자들이 일을 하기 싫어해서','고려의 법을 그대로 따라서','다른 나라가 시켜서'], a:0, hint:'큰 전쟁을 겪은 뒤의 일이에요.'},
+    {type:'input', q:'조선 시대 여자가 따라야 했던 세 가지 도리를 무엇이라고 할까요?', a:['삼종지도'], ph:'초성: ㅅㅈㅈㄷ', hint:'초성은 ㅅㅈㅈㄷ, 네 글자예요.'}
+  ]
+},
+{
+  title:'조선 사람이 되어 보기', pic:'m6', item:{img:'diary', name:'일기장'},
+  story:[
+    `<p>조선에서 태어났다면 나는 어떤 신분이었을까요?</p>
+     <p><b>재미로 하는 랜덤 신분 게임</b>을 해 보고, 나온 신분의 사람이 되어 <span class="key">가상 일기</span>를 써 봐요.</p>
+     <p class="note">※ 이 게임은 진짜 신분과 아무 관계가 없어요. 오늘날에는 신분이 없고 모두 평등해요!</p>
+     ${kkabi('마지막 미션이야! 일기를 다 쓰면 과거 시험장으로 갈 수 있어!')}`
+  ],
+  qs:[
+    {type:'status', q:'랜덤 신분 게임! 나와 가까운 답을 골라 보세요.'},
+    {type:'diary', q:'내 신분의 조선 사람이 되어 가상 일기를 써 보세요.', min:40}
+  ]
+}
+];
+
+const STATUS_Q = [
+  ['나는 게으르다.', ['절대 아님.','에이, 아닐걸?','그럴 때도 있지.','보통 그렇지?','나 = 게으름']],
+  ['나는 손재주가 좋다.', ['매우 그렇다.','좀 그런 것 같다.','자랑할 정돈 아님.','좋다고 말할 수 없음.','내가 만지면 다 망한다.']],
+  ['나는 남에게 시키는 게 마음이 불편하다.', ['매우 그렇다.','좀 그렇다.','경우에 따라 다르다.','시키면 편하다.','난 내가 해야 할 일도 시킨다.']],
+  ['나는 정리정돈을 잘한다.', ['매우 그렇다.','더럽진 않다.','몰아서 한다.','대충 한다.','내가 안 한다.']],
+  ['나는 매일 꾸준히 공부한다.', ['공부가 뭔지 모른다.','안 할 핑계를 찾는다.','종종 몰아서 한다.','매일 하려고 노력은 한다.','공부는 내 일상.']]
+];
+const STATUS = {
+  '양반':{img:'yangban', desc:'유교 책을 공부하고, 관리가 되어 나랏일을 해요. 군역을 면제받아요.', words:['과거 시험','글공부','서원','나랏일','갓']},
+  '중인':{img:'jungin', desc:'의학, 법률, 통역 같은 전문적인 일을 하거나 관리를 도와요.', words:['약초','환자','통역','관청','전문 기술']},
+  '상민':{img:'sangmin', desc:'주로 농사를 짓거나 장사를 해요. 나라에 세금을 내고 군대에 가요.', words:['농사','장터','세금','군대','풍년']},
+  '천민':{img:'cheonmin', desc:'대부분 노비로, 주인집의 허드렛일을 하거나 물건을 만들어요.', words:['주인집','허드렛일','지게','물 긷기','가족']}
+};
+const statusOf = s => s>=20?'양반':s>=15?'중인':s>=10?'상민':'천민';
+
+const BINGO = [
+  ['『삼강행실도』는 백성에게 유교의 가르침을 알리려고 글과 그림으로 만든 책이다.',1,''],
+  ['관혼상제는 유교 예절을 따른 네 가지 집안 행사이다.',1,''],
+  ['조선 시대 의사, 통역관 같은 전문적인 일은 주로 중인이 맡았다.',1,''],
+  ['『경국대전』은 고려 시대에 완성된 법전이다.',0,'조선 성종 때 완성되었어요.'],
+  ['조선 시대 노비는 사고팔리거나 물려지기도 했다.',1,''],
+  ['양반은 군역을 지고 주로 농사를 지었다.',0,'양반은 군역을 면제받고 공부하거나 나랏일을 했어요.'],
+  ['법으로 조선의 신분은 양인과 천인으로 나뉘었다.',1,''],
+  ['조선 후기로 갈수록 여성의 지위가 높아졌다.',0,'후기로 갈수록 여성의 지위가 낮아졌어요.'],
+  ['삼종지도는 조선 시대 여자가 따라야 했던 세 가지 도리이다.',1,'']
+];
+const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+const MAX_COINS = MISSIONS.reduce((a,m)=>a+m.qs.length*3,0) + BINGO.length*3;
+
+/* ===================== 기록 보내기 (앱스스크립트) ===================== */
+const GAS_KEY = 'joseon-gas-url';
+(function(){ // 주소창 ?gas=... 로 받은 주소를 기억
+  try{ const u=new URL(location.href), g=u.searchParams.get('gas');
+    if(g){ localStorage.setItem(GAS_KEY,g); u.searchParams.delete('gas'); history.replaceState(null,'',u.pathname+u.search+u.hash); } }catch(e){}
+})();
+const gasUrl = () => { try{ return localStorage.getItem(GAS_KEY) || (window.CONFIG&&CONFIG.GAS_URL) || ''; }catch(e){ return (window.CONFIG&&CONFIG.GAS_URL)||''; } };
+const QKEY = 'joseon-send-queue';
+function record(kind, stage, detail){
+  const d = {class:CLASS_NAME, no:S.no, name:S.name, kind, stage, coins:S.coins, status:S.status||'', detail:detail||'', at:new Date().toLocaleString('ko-KR')};
+  let q=[]; try{ q=JSON.parse(localStorage.getItem(QKEY))||[]; }catch(e){}
+  q.push(d); try{ localStorage.setItem(QKEY, JSON.stringify(q)); }catch(e){}
+  flush();
+}
+let flushing=false;
+async function flush(){
+  const url=gasUrl(); if(!url || flushing) return;
+  let q=[]; try{ q=JSON.parse(localStorage.getItem(QKEY))||[]; }catch(e){ return; }
+  if(!q.length) return; flushing=true;
+  while(q.length){
+    try{ await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(q[0])}); }
+    catch(e){ break; }
+    q.shift(); try{ localStorage.setItem(QKEY, JSON.stringify(q)); }catch(e){}
+  }
+  flushing=false;
+}
+window.addEventListener('online', flush);
+
+/* ===================== 상태 ===================== */
+const KEY = 'joseon-gwageo-v1';
+const fresh = (no,n) => ({m:0, qi:0, no:no||'', name:n||'', coins:0, wr:{}, status:'', diary:''});
+let S = fresh();
+try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && typeof s.m==='number') S = Object.assign(S, s); }catch(e){}
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} };
+const $ = s => document.querySelector(s);
+const screen = $('#screen'), hud = $('#hud');
+const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const shuffled = a => { if(a.length<2) return a.slice(); let r; do{ r=shuffle(a); }while(r.every((v,i)=>v===a[i])); return r; };
+const norm = t => String(t).replace(/[\s『』「」《》'"]/g,'').toLowerCase();
+
+for(let i=0;i<16;i++){ const b=document.createElement('i');
+  b.style.cssText=`left:${Math.random()*105}vw;animation-duration:${10+Math.random()*12}s;animation-delay:-${Math.random()*20}s`;
+  $('#petals').appendChild(b); }
+
+let AC;
+function beep(kind){
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    ({ok:[660,880], bad:[220,160], win:[523,659,784,1047]}[kind]).forEach((f,i)=>{
+      const o=AC.createOscillator(), g=AC.createGain();
+      o.type = kind==='bad'?'sawtooth':'triangle'; o.frequency.value=f;
+      g.gain.setValueAtTime(.15, AC.currentTime+i*.12);
+      g.gain.exponentialRampToValueAtTime(.001, AC.currentTime+i*.12+.25);
+      o.connect(g).connect(AC.destination); o.start(AC.currentTime+i*.12); o.stop(AC.currentTime+i*.12+.26);
+    });
+  }catch(e){}
+}
+function confetti(n=90){
+  const box=$('#confetti'), cols=['#f0b429','#2c4a7a','#c9533a','#f6b6c4','#fff'];
+  for(let i=0;i<n;i++){ const el=document.createElement('i');
+    el.style.left=Math.random()*100+'vw'; el.style.background=cols[i%cols.length];
+    el.style.animationDuration=(2+Math.random()*2.5)+'s'; el.style.animationDelay=Math.random()*.8+'s';
+    box.appendChild(el); setTimeout(()=>el.remove(),6000); }
+}
+
+function drawHud(){
+  hud.classList.remove('hidden');
+  let road='';
+  for(let i=0;i<=MISSIONS.length;i++){
+    const c = i<S.m?'done':(i===S.m?'now':'');
+    road += `<div class="node ${c}">${i<MISSIONS.length?(i<S.m?'✓':i+1):'★'}</div>`;
+    if(i<MISSIONS.length) road += `<div class="seg ${i<S.m?'done':''}"></div>`;
+  }
+  const bag = MISSIONS.map((m,i)=> i<S.m ? `<div class="slot has" title="${esc(m.item.name)}"><img src="${img(m.item.img)}" alt="${esc(m.item.name)}"></div>` : `<div class="slot">?</div>`).join('');
+  hud.innerHTML = `<div class="road">${road}</div><div class="bag">${bag}<span class="coin">엽전 ${S.coins}냥</span><span class="who">${esc(S.no)}번 ${esc(S.name)}</span><button class="reset" id="resetBtn">처음부터</button></div>`;
+  $('#resetBtn').onclick = () => { if(confirm('처음부터 다시 시작할까요? 모은 보물이 사라져요.')){ S=fresh(S.no,S.name); save(); title(); } };
+}
+const top0 = () => window.scrollTo(0,0);
+
+function title(){
+  hud.classList.add('hidden'); top0();
+  const cont = S.m>0 || S.qi>0;
+  const nos = Array.from({length:30},(_,i)=>i+1).map(n=>`<option value="${n}" ${String(n)===String(S.no)?'selected':''}>${n}번</option>`).join('');
+  screen.innerHTML = `<div class="card center">
+    <div class="school">${CLASS_NAME} 친구들의 도전!</div><br>
+    <span class="tag">5-2 사회 · 유교 질서에 따른 조선 사회</span>
+    <img class="scene" src="${img('title')}" alt="조선 마을과 과거 시험장">
+    <h1>까비와 조선 과거 시험 대모험</h1>
+    ${kkabi(`${CLASS_NAME} 선비들, 어서 와! 과거 시험장 문을 열려면 유교의 보물 6개가 필요해. 나랑 같이 모으러 갈래?`)}
+    <p class="note">문제를 맞혀야만 다음 단계로 갈 수 있어요. 한 번에 맞히면 엽전 3냥!</p>
+    <div class="idrow"><select class="ans" id="no"><option value="">번호</option>${nos}</select>
+      <input class="ans" id="nm" maxlength="10" placeholder="이름" value="${esc(S.name)}"></div>
+    <div class="fb" id="fb"></div>
+    <div class="row"><button class="btn gold" id="go">${cont?'이어서 하기':'모험 시작'}</button>
+    ${cont?'<button class="btn ghost" id="new">새로 시작</button>':''}</div></div>`;
+  const start = f => {
+    const no=$('#no').value, n=$('#nm').value.trim();
+    if(!no || !n){ const fb=$('#fb'); fb.className='fb bad'; fb.textContent='번호와 이름을 모두 써 주세요!'; return; }
+    const changed = String(no)!==String(S.no) || n!==S.name;
+    if(f || (changed && cont && confirm('다른 친구 이름이에요. 처음부터 새로 시작할까요?'))) S=fresh(no,n); else { S.no=no; S.name=n; }
+    save(); beep('ok'); record('시작', `미션 ${S.m+1}`, ''); route();
+  };
+  $('#go').onclick = () => start(false);
+  if(cont) $('#new').onclick = () => start(true);
+}
+function route(){ S.m < MISSIONS.length ? story(S.m,0) : gateIntro(); }
+
+function story(mi, pi){
+  drawHud(); top0();
+  const M=MISSIONS[mi], last=pi===M.story.length-1;
+  screen.innerHTML = `<div class="card">
+    <span class="tag">미션 ${mi+1} / ${MISSIONS.length}</span>
+    <h2>${esc(M.title)}</h2>
+    ${pi===0?`<img class="scene" src="${img(M.pic)}" alt="">`:''}
+    ${M.story[pi]}
+    <div class="row">${pi>0?'<button class="btn ghost" id="prev">이전</button>':''}
+      <button class="btn ${last?'gold':''}" id="next">${last?(S.qi>0?'문제로 돌아가기':'문제 도전!'):'다음'}</button></div></div>`;
+  if(pi>0) $('#prev').onclick = () => story(mi,pi-1);
+  $('#next').onclick = () => last ? ask(mi,S.qi||0) : story(mi,pi+1);
+}
+
+/* 문제 엔진: 맞혀야만 다음으로 */
+function ask(mi, qi){
+  const M=MISSIONS[mi];
+  if(qi>=M.qs.length) return reward(mi);
+  S.qi=qi; save();
+  drawHud(); top0();
+  const Q=M.qs[qi]; let tries=0;
+  screen.innerHTML = `<div class="card">
+    <span class="tag">미션 ${mi+1} · ${esc(M.title)}</span>
+    <div class="qno">문제 ${qi+1} / ${M.qs.length}</div>
+    <div class="qtext">${esc(Q.q)}</div>
+    <div id="body"></div><div class="fb" id="fb"></div><div class="row" id="ctl"></div></div>`;
+  const body=$('#body'), fb=$('#fb'), ctl=$('#ctl'), wk=mi+'-'+qi;
+  const wrong = () => { tries++; S.wr[wk]=(S.wr[wk]||0)+1; save(); beep('bad'); fb.className='fb bad'; fb.textContent=`아쉬워요! 다시 도전해 보세요. 힌트: ${Q.hint}`; };
+  const right = (msg) => {
+    const got = tries===0?3:tries===1?2:1; S.coins+=got; save(); drawHud(); beep('ok');
+    fb.className='fb good'; fb.textContent= msg || `정답이에요! 엽전 ${got}냥을 얻었어요.`;
+    body.querySelectorAll('button,input,textarea').forEach(e=>e.disabled=true);
+    ctl.innerHTML=`<button class="btn gold" id="nx">${qi===M.qs.length-1?'보물 받기':'다음 문제'}</button>`;
+    $('#nx').onclick=()=>ask(mi,qi+1); $('#nx').focus();
+  };
+  ctl.innerHTML=`<button class="btn ghost sm" id="bk">이야기 다시 보기</button>`;
+  $('#bk').onclick=()=>story(mi,0);
+  const addCheck = (fn,label='확인') => { const b=document.createElement('button'); b.className='btn'; b.textContent=label; b.onclick=fn; ctl.appendChild(b); };
+  const say = t => { fb.className='fb bad'; fb.textContent=t; };
+  const flash = b => { b.classList.remove('no'); void b.offsetWidth; b.classList.add('no'); setTimeout(()=>b.classList.remove('no'),500); };
+
+  if(Q.type==='choice'){
+    body.innerHTML=`<div class="opts">${shuffle(Q.opts.map((_,i)=>i)).map(i=>`<button class="opt" data-i="${i}">${esc(Q.opts[i])}</button>`).join('')}</div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(+b.dataset.i===Q.a){b.classList.add('ok');right();} else {b.classList.add('no');b.disabled=true;wrong();} });
+  }
+  else if(Q.type==='ox'){
+    body.innerHTML=`<div class="ox"><button class="opt o" data-v="O">O</button><button class="opt x" data-v="X">X</button></div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(b.dataset.v===Q.a){b.classList.remove('no');b.classList.add('ok');right();} else {flash(b);wrong();} });
+  }
+  else if(Q.type==='input'){
+    body.innerHTML=`<div class="center"><input class="ans" id="in" autocomplete="off" placeholder="${esc(Q.ph||'')}" ${Q.num?'inputmode="numeric"':''}></div>`;
+    const inp=$('#in'), chk=()=>{ if(!inp.value.trim()) return inp.focus(); Q.a.map(norm).includes(norm(inp.value))?right():(wrong(),inp.select()); };
+    addCheck(chk); inp.onkeydown=e=>{ if(e.key==='Enter'&&!e.isComposing&&!inp.disabled) chk(); }; inp.focus();
+  }
+  else if(Q.type==='multi'){
+    body.innerHTML=`<div class="opts two">${shuffle(Q.opts.map((_,i)=>i)).map(i=>`<button class="opt" data-i="${i}">${esc(Q.opts[i])}</button>`).join('')}</div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>b.classList.toggle('sel'));
+    addCheck(()=>{ const sel=[...body.querySelectorAll('.opt.sel')].map(b=>+b.dataset.i).sort(); if(sel.join()===Q.a.join()){body.querySelectorAll('.opt.sel').forEach(b=>b.classList.add('ok'));right();} else wrong(); });
+  }
+  else if(Q.type==='order'){
+    const pool=shuffled(Q.items.map((_,i)=>i)); let seq=[];
+    body.innerHTML=`<div class="seq" id="seq"></div><div class="pills" id="pool"></div>`;
+    const draw=()=>{
+      $('#seq').innerHTML=seq.map((i,k)=>`<button class="pill" data-k="${k}">${k+1}. ${esc(Q.items[i])}</button>`).join('');
+      $('#pool').innerHTML=pool.map(i=>`<button class="pill pool ${seq.includes(i)?'used':''}" data-i="${i}">${esc(Q.items[i])}</button>`).join('');
+      $('#pool').querySelectorAll('.pill').forEach(b=>b.onclick=()=>{seq.push(+b.dataset.i);draw();});
+      $('#seq').querySelectorAll('.pill').forEach(b=>b.onclick=()=>{seq.splice(+b.dataset.k,1);draw();});
+    }; draw();
+    addCheck(()=>{ if(seq.length<Q.items.length) return say('카드를 모두 놓아 주세요!'); seq.every((v,k)=>v===k)?right():(wrong(),seq=[],draw()); });
+  }
+  else if(Q.type==='frames'){
+    const order=shuffled(Q.items.map((_,i)=>i)); let seq=[];
+    body.innerHTML=`<div class="frames">${order.map(i=>`<button class="frame" data-i="${i}"><span class="num"></span><img src="${img(Q.items[i][0])}" alt="">${esc(Q.items[i][1])}</button>`).join('')}</div>
+      <p class="center note">다시 누르면 번호가 빠져요.</p>`;
+    const draw=()=>body.querySelectorAll('.frame').forEach(b=>{ const k=seq.indexOf(+b.dataset.i); b.classList.toggle('on',k>=0); b.querySelector('.num').textContent=k>=0?k+1:''; });
+    body.querySelectorAll('.frame').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i, k=seq.indexOf(i); if(k>=0) seq.splice(k,1); else seq.push(i); draw(); });
+    addCheck(()=>{ if(seq.length<Q.items.length) return say('그림을 모두 눌러 순서를 정해 주세요!'); seq.every((v,k)=>v===k)?right():(wrong(),seq=[],draw()); });
+  }
+  else if(Q.type==='match'){
+    const L=shuffle(Q.pairs.map((_,i)=>i)), R=shuffled(L); let pick=null, done=0;
+    body.innerHTML=`<div class="match">${L.map((l,k)=>{const p=Q.pairs[l],r=Q.pairs[R[k]];return `<button class="opt" data-s="L" data-i="${l}">${p[0]?`<img src="${img(p[0])}" alt="">`:''}<span>${esc(p[1])}</span></button><button class="opt" data-s="R" data-i="${R[k]}">${esc(r[2])}</button>`;}).join('')}</div>
+      <p class="center note">왼쪽을 누른 뒤, 알맞은 오른쪽을 눌러요.</p>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      if(b.dataset.s==='L'){ body.querySelectorAll('.opt.sel').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); pick=b; return; }
+      if(!pick) return say('먼저 왼쪽을 골라 주세요!');
+      if(pick.dataset.i===b.dataset.i){ [pick,b].forEach(x=>{x.classList.remove('sel');x.classList.add('ok');x.disabled=true;}); pick=null; done++;
+        if(done===Q.pairs.length) right(); else { beep('ok'); fb.className='fb good'; fb.textContent='짝을 찾았어요! 계속해 보세요.'; }
+      } else { flash(b); wrong(); }
+    });
+  }
+  else if(Q.type==='sort'){
+    const items=shuffle(Q.items); let k=0;
+    const draw=()=>{ body.innerHTML=`<p class="center qno">${k+1} / ${items.length}</p><div class="sortcard">${esc(items[k][0])}</div><div class="bins">${Q.bins.map((t,i)=>`<button class="btn ${['','gold','red','ghost'][i%4]}" data-i="${i}">${esc(t)}</button>`).join('')}</div>`;
+      body.querySelectorAll('.bins .btn').forEach(b=>b.onclick=()=>{ if(+b.dataset.i===items[k][1]){ k++; if(k===items.length){ body.innerHTML='<div class="sortcard">모두 분류했어요!</div>'; right(); } else { beep('ok'); fb.className='fb good'; fb.textContent='맞았어요!'; draw(); } } else { const c=body.querySelector('.sortcard'); c.style.animation='none'; void c.offsetWidth; c.style.animation='shake .35s'; wrong(); } });
+    }; draw();
+  }
+  else if(Q.type==='status'){
+    let k=0, sum=0;
+    const draw=()=>{
+      const [t,opts]=STATUS_Q[k];
+      body.innerHTML=`<p class="center qno">${k+1} / ${STATUS_Q.length}</p><div class="sortcard">${esc(t)}</div>
+        <div class="scale">${opts.map((o,i)=>`<button class="opt" data-v="${i+1}"><b>${i+1}</b>${esc(o)}</button>`).join('')}</div>`;
+      body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ sum+=+b.dataset.v; k++; beep('ok');
+        if(k<STATUS_Q.length) return draw();
+        S.status=statusOf(sum); save(); const I=STATUS[S.status];
+        body.innerHTML=`<div class="statusbox"><p class="jua" style="margin:0">내 점수는 ${sum}점!</p><img src="${img(I.img)}" alt=""><h2>당신은 ${S.status}이었군요?</h2><p>${esc(I.desc)}</p></div>`;
+        right(`신분이 정해졌어요! 엽전 3냥을 얻었어요. 이제 ${S.status}이 되어 일기를 써 봐요.`);
+      });
+    }; draw();
+  }
+  else if(Q.type==='diary'){
+    if(!S.status) S.status='상민';
+    const I=STATUS[S.status];
+    body.innerHTML=`<div class="guide"><img src="${img(I.img)}" alt="" style="animation:none"><div><b>나의 신분: ${S.status}</b><br>${esc(I.desc)}</div></div>
+      <p style="margin:6px 0">이런 낱말을 넣어 보세요:</p>
+      <div class="chips">${I.words.map(w=>`<span class="chip" style="min-width:0">${esc(w)}</span>`).join('')}</div>
+      <details style="margin-bottom:10px"><summary style="cursor:pointer;min-height:44px">예시 일기 보기 (상민)</summary>
+        <div class="letterbox">1xxx년 ○월 ○일\n어떻게 딱 오늘 비가 내리지? 너무 감사하다. 덕분에 메말라 가던 밭의 작물이 다시 푸르러졌다. 이대로만 가면 풍년일 텐데…. 내일도 비가 내렸으면 좋겠다.</div></details>
+      <textarea class="ans" id="lt" placeholder="1xxx년 ○월 ○일&#10;오늘은…">${esc(S.diary)}</textarea><p class="center" id="cnt" style="margin:6px 0"></p>`;
+    const t=$('#lt'), n=()=>t.value.replace(/\s/g,'').length, up=()=>{ $('#cnt').textContent=`${n()}자 / ${Q.min}자 이상`; };
+    t.oninput=()=>{ up(); S.diary=t.value; save(); }; up();
+    addCheck(()=>{ if(n()<Q.min) return say(`조금만 더 써 보세요! ${Q.min}자 이상 쓰면 다음으로 갈 수 있어요.`); S.diary=t.value.trim(); save(); record('일기', `미션 ${mi+1}`, S.diary); right('멋진 일기예요! 선생님께 보냈어요.'); },'일기 제출하기');
+  }
+}
+
+function reward(mi){
+  const M=MISSIONS[mi];
+  const detail = M.qs.map((_,i)=>`${i+1}번 ${S.wr[mi+'-'+i]||0}회`).join(', ');
+  const wrongSum = M.qs.reduce((a,_,i)=>a+(S.wr[mi+'-'+i]||0),0);
+  if(S.m<=mi){ S.m=mi+1; S.qi=0; save(); record('미션완료', `미션 ${mi+1} ${M.title}`, `틀린 횟수 ${wrongSum}회 (${detail})`); }
+  drawHud(); top0(); beep('win'); confetti(40);
+  screen.innerHTML=`<div class="card center"><span class="tag">미션 ${mi+1} 성공!</span>
+    <h2>보물 획득!</h2><img class="item" src="${img(M.item.img)}" alt="${esc(M.item.name)}">
+    <h2>${esc(M.item.name)}</h2><p>${S.m<MISSIONS.length?`앞으로 ${MISSIONS.length-S.m}개만 더 모으면 과거 시험장 문을 열 수 있어요!`:'보물 6개를 모두 모았어요!'}</p>
+    <div class="row"><button class="btn gold" id="nx">${S.m<MISSIONS.length?'다음 미션으로':'과거 시험장으로!'}</button></div></div>`;
+  $('#nx').onclick=route;
+}
+
+function gateIntro(){
+  drawHud(); top0();
+  screen.innerHTML=`<div class="card center"><span class="tag red">최종 관문</span>
+    <img class="scene" src="${img('gate')}" alt="잠긴 과거 시험장 문">
+    <h2>과거 시험장 대문</h2>
+    ${kkabi('보물 6개를 다 모았구나! 마지막 <b>과거 시험</b>은 빙고야. 옳은 설명은 O, 틀린 설명은 X를 눌러 줘. 빙고가 완성되면 문이 열려!')}
+    <div class="row"><button class="btn gold" id="nx">과거 시험 보기</button></div></div>`;
+  $('#nx').onclick=bingo;
+}
+
+function bingo(){
+  drawHud(); top0();
+  const done=Array(9).fill(false); let cur=0, tries=0, wrongs=0;
+  screen.innerHTML=`<div class="card"><span class="tag red">최종 관문 · 과거 시험 빙고</span>
+    <div class="qtext" style="margin-top:8px">옳은 설명의 칸만 빙고가 돼요!</div>
+    <div class="bingo" id="bg"></div><div id="q"></div><div class="fb" id="fb"></div></div>`;
+  const fb=$('#fb');
+  const draw=()=>{
+    const ok=i=>done[i]&&BINGO[i][1], lines=LINES.filter(l=>l.every(ok)).flat(), all=done.every(Boolean);
+    $('#bg').innerHTML=BINGO.map((b,i)=>`<button data-i="${i}" class="${done[i]?(b[1]?((all&&lines.includes(i))?'line':'t'):'f'):(i===cur?'cur':'')}">${done[i]?(b[1]?'O':'X'):i+1}</button>`).join('');
+    $('#bg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i; if(!done[i]){cur=i;tries=0;fb.className='fb';draw();} });
+    if(all) return askLines(LINES.filter(l=>l.every(ok)).length);
+    $('#q').innerHTML=`<div class="qtext">${cur+1}. ${esc(BINGO[cur][0])}</div><div class="ox"><button class="opt o" data-v="1">O</button><button class="opt x" data-v="0">X</button></div>`;
+    $('#q').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      if(+b.dataset.v===BINGO[cur][1]){ S.coins+=tries?1:3; tries=0; save(); drawHud(); beep('ok'); done[cur]=true;
+        fb.className='fb good'; fb.textContent='정답이에요! '+BINGO[cur][2];
+        const n=done.indexOf(false); if(n>=0) cur=n; draw();
+      } else { tries++; wrongs++; beep('bad'); fb.className='fb bad'; fb.textContent='다시 생각해 보세요! 공부한 내용을 떠올려 보세요.'; }
+    });
+  };
+  const askLines=n=>{
+    $('#q').innerHTML=`<div class="qtext">완성된 빙고는 몇 줄인가요?</div><div class="opts two">${[1,2,3,4].map(v=>`<button class="opt" data-v="${v}" style="text-align:center">${v}줄</button>`).join('')}</div>`;
+    $('#q').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(+b.dataset.v===n) opening(wrongs); else { b.classList.add('no'); b.disabled=true; wrongs++; beep('bad'); fb.className='fb bad'; fb.textContent='가로, 세로, 대각선 줄을 모두 세어 보세요!'; } });
+  };
+  draw();
+}
+
+function opening(wrongs){
+  drawHud(); top0(); beep('win');
+  screen.innerHTML=`<div class="card center"><h2>보물을 대문에 바쳐요!</h2>
+    <img class="scene" src="${img('gate')}" alt="">
+    <div class="locks">${MISSIONS.map((m,i)=>`<img src="${img(m.item.img)}" alt="" style="animation-delay:${i*.25}s">`).join('')}</div></div>`;
+  setTimeout(()=>ending(wrongs),2200);
+}
+
+function rankOf(c){ const r=c/MAX_COINS; return r>=.9?'장원 급제':r>=.75?'갑과 급제':r>=.55?'을과 급제':'병과 급제'; }
+function ending(wrongs){
+  const first = !S.done;
+  S.m=MISSIONS.length; S.done=true; save(); drawHud(); top0(); beep('win'); confetti(150);
+  const rank = rankOf(S.coins);
+  if(first) record('최종통과', '과거 급제', `${rank} · 빙고 틀린 횟수 ${wrongs||0}회`);
+  screen.innerHTML=`<div class="card center">
+    <img class="scene" src="${img('gateopen')}" alt="활짝 열린 과거 시험장 문">
+    <h1>과거 급제를 축하합니다!</h1>
+    <div class="cert"><img src="${img('hongpae')}" alt="홍패" style="width:120px;height:120px;object-fit:contain"><br>
+      <span class="tag red">홍패 · 과거 합격 증서</span>
+      <h2>${esc(CLASS_NAME)} ${esc(S.no)}번 ${esc(S.name||'선비')}</h2>
+      <p>위 선비는 『삼강행실도』, 『경국대전』, 관혼상제, 신분 제도, 조선 여성의 삶을 모두 공부하여<br>과거 시험에 급제하였기에 이 홍패를 내립니다.</p>
+      <div class="locks">${MISSIONS.map(m=>`<img src="${img(m.item.img)}" alt="${esc(m.item.name)}">`).join('')}</div>
+      <p class="jua" style="font-size:1.5em;margin:0">${rank} · 엽전 ${S.coins}냥</p></div>
+    ${S.diary?`<h2 style="margin-top:20px">내가 쓴 조선 일기 (${esc(S.status)})</h2><div class="letterbox">${esc(S.diary)}</div>`:''}
+    <h2 style="margin-top:20px">배움 노트</h2>
+    <div class="chips" style="text-align:left">
+      <div class="chip"><b>『삼강행실도』</b><small>백성이 유교의 가르침을 배우고 실천하도록 글과 그림으로 만듦</small></div>
+      <div class="chip"><b>『경국대전』</b><small>유교 중심의 나라 질서를 세운 기본 법전</small></div>
+      <div class="chip"><b>관혼상제</b><small>나라와 집안의 행사가 유교 예절을 따름</small></div>
+      <div class="chip"><b>신분 제도</b><small>양반·중인·상민·천민, 신분에 맞게 생활</small></div>
+      <div class="chip"><b>여성의 지위</b><small>조선 전기에 비해 후기로 갈수록 낮아짐</small></div>
+    </div>
+    <div class="row"><button class="btn" id="again">처음부터 다시 하기</button></div></div>`;
+  $('#again').onclick=()=>{ S=fresh(S.no,S.name); save(); title(); };
+}
+
+/* ===================== 선생님 설정 ===================== */
+$('#teacherBtn').onclick = () => {
+  hud.classList.add('hidden'); top0();
+  const cur=gasUrl();
+  const base=location.href.split('?')[0].split('#')[0];
+  screen.innerHTML=`<div class="card"><span class="tag">선생님 설정</span><h2>기록 받을 주소</h2>
+    <p>구글 앱스스크립트를 웹 앱으로 배포한 뒤, 받은 주소(https://script.google.com/... /exec)를 붙여 넣어 주세요.</p>
+    <input class="ans" id="gurl" style="width:100%;text-align:left;font-size:18px" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(cur)}">
+    <div class="row"><button class="btn" id="gsave">저장</button><button class="btn ghost" id="gtest">시험 기록 보내기</button><button class="btn ghost" id="gback">돌아가기</button></div>
+    <div class="fb" id="fb"></div>
+    <p class="note" style="margin-top:18px">학생 기기마다 주소를 넣기 번거로우면, 아래 링크를 학생들에게 나눠 주세요. 한 번 열면 주소가 기억돼요.</p>
+    <div class="letterbox" id="share" style="word-break:break-all;font-size:16px">${cur?esc(base+'?gas='+encodeURIComponent(cur)):'(주소를 저장하면 링크가 나타나요)'}</div></div>`;
+  const fb=$('#fb');
+  $('#gsave').onclick=()=>{ const v=$('#gurl').value.trim();
+    if(v && !/^https:\/\/script\.google\.com\/.+\/exec$/.test(v)){ fb.className='fb bad'; fb.textContent='주소가 https://script.google.com/ 으로 시작하고 /exec 로 끝나는지 확인해 주세요.'; return; }
+    try{ v?localStorage.setItem(GAS_KEY,v):localStorage.removeItem(GAS_KEY); }catch(e){}
+    fb.className='fb good'; fb.textContent='저장했어요!'; $('#share').textContent=v?base+'?gas='+encodeURIComponent(v):'(주소를 저장하면 링크가 나타나요)'; flush(); };
+  $('#gtest').onclick=async()=>{ const url=gasUrl(); if(!url){ fb.className='fb bad'; fb.textContent='먼저 주소를 저장해 주세요.'; return; }
+    try{ await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({class:CLASS_NAME,no:'0',name:'선생님 시험',kind:'시험',stage:'-',coins:0,status:'',detail:'연결 확인',at:new Date().toLocaleString('ko-KR')})});
+      fb.className='fb good'; fb.textContent='보냈어요! 스프레드시트 "기록" 탭에 "선생님 시험" 줄이 생겼는지 확인해 주세요.'; }
+    catch(e){ fb.className='fb bad'; fb.textContent='보내지 못했어요. 인터넷 연결과 주소를 확인해 주세요.'; } };
+  $('#gback').onclick=title;
+};
+
+flush();
+title();
+</script>
+</body>
+</html>

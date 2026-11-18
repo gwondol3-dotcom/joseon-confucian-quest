@@ -1,0 +1,5 @@
+assets/*-raw.png
+assets/*.png
+logs/_run.txt
+logs/_sheet.png
+logs/_log_*.txt
